@@ -15,9 +15,9 @@ put '/save' do
   software = params['progVote']
   buildprocessor.save_build(machine_name, params['ip'], params['description'], params['Bit'],'0', software)
   buildprocessor.create_folder(machine_name)
-  #buildprocessor.create_vagrantfile(machine_name)
-  #buildprocessor.create_ansiblefile(machine_name, software)
-  #buildprocessor.start_vm(machine_name)
+  buildprocessor.create_vagrantfile(machine_name)
+  buildprocessor.create_ansiblefile(machine_name, software)
+  buildprocessor.start_vm(machine_name)
 
   redirect '/'
 end

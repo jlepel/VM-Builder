@@ -118,8 +118,6 @@ class Administration_Manager
     @filesystem_manager.delete_file_content(@persistence_handler.logfile?.value)
   end
 
-  def get_software
-    @persistence_handler.all_software?
-  end
+
 
 end

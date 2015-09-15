@@ -50,19 +50,20 @@ get '/log' do
   erb :logfile
 end
 
-get '/software_config' do
-  @software_selection = admin_mgr.get_software
-  puts params['leftValues']
-  erb :software_config
-end
-
-post '/software_config' do
-  #raise params.inspect
-  params['selection']
-end
 
 delete '/log' do
   admin_mgr.delete_log()
   redirect '/log'
 end
 
+
+get '/add' do
+
+  erb :software_add
+end
+
+post '/add' do
+  puts params['program']
+  admin_mgr.add_software(params['program'], params['command'], params['description'])
+  redirect '/add'
+end

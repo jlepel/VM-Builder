@@ -1,29 +1,36 @@
-require './models/administration_manager'
+require './models/software_editor'
 
-admin_manager = Administration_Manager.new
+software_editor = Software_Editor.new
 
-get '/add' do
 
-  erb :software_add
+get '/software_config' do
+  @software_selection = software_editor.get_software
+  erb :software_config
 end
 
-post '/add' do
-  puts params['program']
-  admin_manager.add_software(params['program'], params['command'], params['description'])
-  redirect '/add'
+post '/software_config' do
+  #raise params.inspect
+
+  software_editor.save_build(params['program'], params['command'], params['description'], params['selection'], params[:file][:filename], params['destination'])
+  #puts software = params['selection']
+  #puts destination = params['destination']
+  #puts tempfile = params[:file][:tempfile]
+
+
+
+
 end
 
 
-get '/editor' do
 
-end
 
-get '/edit' do
 
-end
 
-get '/delete' do
 
-end
+
+
+
+
+
 
 

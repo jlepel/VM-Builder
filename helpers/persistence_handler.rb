@@ -13,7 +13,10 @@ class Machine
   property :description, String, :length => 255# A text block, for longer string data.
   property :status, Integer # An auto-increment integer key
 
-  has n, :files
+  has n, :machinefiles
+  has n, :datafiles, :through => :machinefiles
+
+
   has n, :machinesoftwares
   has n, :softwares, :through => :machinesoftwares
   belongs_to :vmimage
@@ -26,26 +29,46 @@ class Machinesoftware
   belongs_to :software, :key => true
 end
 
+class Machinefile
+  include DataMapper::Resource
+
+  belongs_to :machine, :key => true
+  belongs_to :datafile, :key => true
+end
+
 class Software
   include DataMapper::Resource
 
   property :id, Serial # An auto-increment integer key
   property :name, String, :length => 255, :required => true # A varchar type string, for short strings
   property :command, String, :length => 255, :required => true # A text block, for longer string data.
-  property :description, String, :length => 255, :required => true # A text block, for longer string data.
+  property :description, String, :length => 255 # A text block, for longer string data.
+
+
+  has n, :softwarefiles
+  has n, :datafiles, :through => :softwarefiles
 
   has n, :machinesoftwares
   has n, :machines, :through => :machinesoftwares
 
   has n, :packages, :child_key => [ :source_id ]
-  has n, :parts, self, :through => :packages, :via => :target
+  has n, :parts, self, :through => :packages, :via => :sub
 end
 
 class Package
   include DataMapper::Resource
 
   belongs_to :source, 'Software', :key => true
-  belongs_to :target, 'Software', :key => true
+  belongs_to :sub, 'Software', :key => true
+
+end
+
+class Softwarefile
+  include DataMapper::Resource
+
+  belongs_to :software, :key => true
+  belongs_to :datafile, :key => true
+
 end
 
 class Vmimage
@@ -57,7 +80,7 @@ class Vmimage
   has n, :machines
 end
 
-class File
+class Datafile
   include DataMapper::Resource
 
   property :id, Serial # An auto-increment integer key
@@ -67,7 +90,13 @@ class File
 
   has n, :fileoptions
   has n, :options, :through => :fileoptions
-  belongs_to :machine
+
+  has n, :machinefiles
+  has n, :machines, :through => :machinefiles
+
+  has n, :softwarefiles
+  has n, :softwares, :through => :softwarefiles
+
 end
 
 class Option
@@ -77,13 +106,13 @@ class Option
   property :option, String, :length => 255, :required => true # A varchar type string, for short strings
 
   has n, :fileoptions
-  has n, :files, :through => :fileoptions
+  has n, :datafiles, :through => :fileoptions
 end
 
 class Fileoption
   include DataMapper::Resource
 
-  belongs_to :file, :key => true
+  belongs_to :datafile, :key => true
   belongs_to :option, :key => true
 end
 
@@ -221,6 +250,16 @@ class PersistenceHandler
     Configuration.first(:config_option => 'logfile')
   end
 
+  def file_path?
+    path = Configuration.first(:config_option => 'file_path')
+    path.value
+  end
+
+  def file_id?(file)
+    file_id = File.first(:name => file)
+    file_id.id
+  end
+
 
   def ubuntu64?
     Vmimage.first(:vm_name => 'precise64')
@@ -234,6 +273,24 @@ class PersistenceHandler
   def update_standardmachines(ubuntu32, ubuntu64)
     ubuntu32?.update(:value => ubuntu32)
     ubuntu64?.update(:value => ubuntu64)
+  end
+
+  def save_software_build(program, command, desc, selection, file, destination)
+    Software.transaction do |t|
+      begin
+        Software.first_or_create(:name => program, :command => command, :description => desc)
+        selection.each do |software|
+          Package.first_or_create(:source_id => software_id?(program), :sub_id => software_id?(software))
+        end
+
+        Datafile.first_or_create(:name => file, :source =>file_path?,  :target => destination)
+        puts software_id?(program)
+          puts file_id?(file)
+        #Softwarefile.first_or_create(:software_id => software_id?(program), :file_id => file_id?(file))
+      rescue
+        t.rollback
+      end
+    end
   end
 
 end
