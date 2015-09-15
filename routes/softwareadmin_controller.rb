@@ -10,11 +10,20 @@ end
 
 post '/software_config' do
   #raise params.inspect
+  file_name = nil
+  selection = params['selection']
+  destination = params['destination']
+  
 
-  software_editor.save_build(params['program'], params['command'], params['description'], params['selection'], params[:file][:filename], params['destination'])
-  #puts software = params['selection']
-  #puts destination = params['destination']
-  #puts tempfile = params[:file][:tempfile]
+  if params[:file] && params[:file][:filename]
+    file_name = params[:file][:filename]
+
+  end
+
+  software_editor.save_build(
+      params['program'], params['command'], params['description'],
+      selection, file_name, destination)
+
 
 
 

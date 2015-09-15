@@ -256,7 +256,7 @@ class PersistenceHandler
   end
 
   def file_id?(file)
-    file_id = File.first(:name => file)
+    file_id = Datafile.first(:name => file)
     file_id.id
   end
 
@@ -276,17 +276,34 @@ class PersistenceHandler
   end
 
   def save_software_build(program, command, desc, selection, file, destination)
+
+    Software.transaction do |t|
+      begin
+        Software.first_or_create(:name => program, :command => command, :description => desc)
+
+          selection.each do |software|
+            Package.first_or_create(:source_id => software_id?(program), :sub_id => software_id?(software))
+          end
+
+          Datafile.first_or_create(:name => file, :source =>file_path?,  :target => destination)
+          Softwarefile.first_or_create(:software_id => software_id?(program), :datafile_id => file_id?(file))
+      rescue
+        t.rollback
+      end
+    end
+  end
+
+  def save_software(program, command, desc)
+    Software.first_or_create(:name => program, :command => command, :description => desc)
+  end
+
+  def save_software_bundle(program, command, desc, selection)
     Software.transaction do |t|
       begin
         Software.first_or_create(:name => program, :command => command, :description => desc)
         selection.each do |software|
           Package.first_or_create(:source_id => software_id?(program), :sub_id => software_id?(software))
         end
-
-        Datafile.first_or_create(:name => file, :source =>file_path?,  :target => destination)
-        puts software_id?(program)
-          puts file_id?(file)
-        #Softwarefile.first_or_create(:software_id => software_id?(program), :file_id => file_id?(file))
       rescue
         t.rollback
       end
