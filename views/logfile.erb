@@ -1,0 +1,16 @@
+<body class='container'>
+
+<section id="menue">
+  <span><a href="/admin">[Administration]</a></span><br><br>
+</section>
+
+<section id="log">
+  <form method="post" action="/log">
+    <input type="hidden" name="_method" value="delete">
+    <%= @content %>
+    <br><br><br>
+    <button type="submit">Delete</button><br>
+  </form>
+</section>
+
+

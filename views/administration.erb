@@ -1,0 +1,64 @@
+<br><br><br><br>
+
+<body class='container'>
+
+<section id="menue">
+  <span><a href="/log">[LOGFILES]</a></span>
+  <span><a href="/software_config">[Software Configuration]</a></span><br><br><br><br>
+
+</section>
+
+
+<section id="configuration">
+  <form method="post" action="/configuration">
+    <input type="hidden" name="_method" value="put">
+    <b>Global - Configuration</b><br>
+    <input type="text" name="app_installpath" value="<%= @app_installpath.value %>"><br>
+    <input type="text" name="vm_installpath" value="<%= @vm_installpath.value %>"><br>
+    <button type="submit">Save</button><br><br><br><br>
+  </form>
+</section>
+
+    <section id="ansible">
+      <form method="post" action="/ansible">
+        <input type="hidden" name="_method" value="put">
+      <b>Ansible - Configuration</b><br>
+    <input type="text" name="hosts" value="<%= @hosts.value %>"><br>
+    <input type="text" name="sudo" value="<%= @sudo.value %>"><br>
+      <button type="submit">Save</button><br><br><br><br>
+      </form>
+    </section>
+
+<section id="vagrant">
+  <form method="post" action="/vagrant">
+    <input type="hidden" name="_method" value="put">
+    <b>Vagrant - Configuration</b><br>
+    <input type="text" name="user" value="<%= @user.value %>"><br>
+    <input type="password" name="pwd" ><br>
+    <button type="submit">Save</button><br><br><br><br>
+  </form>
+</section>
+
+<section id="log">
+  <form method="post" action="/log">
+    <input type="hidden" name="_method" value="put">
+    <b>Logfile - Configuration</b><br>
+    <input type="text" name="logpath" value="<%= @path.value %>"><br>
+    <button type="submit">Save</button><br><br><br><br>
+  </form>
+</section>
+
+<section id="ubuntu_machine">
+  <%= @content %>
+</section>
+
+
+
+
+
+
+
+
+
+
+

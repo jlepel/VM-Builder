@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'/>
+  <title>Maschine Builder 2000</title>
+  <link href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css' rel='stylesheet'/>
+</head>
+
+
+
+<body class='container'>
+<section id="menue">
+  <span><a href="/setup">[create]</a></span>
+  <span><a href="/import">[import]</a></span>
+  <span><a href="/admin">[administration]</a></span>
+</section>
+
+<section id="add">
+<article >
+  <p>
+    <% @show_machines.each do |p| %>
+
+  </p>
+
+        <p>
+          ID: <%= p.id %><br>
+          Machine: <%= p.name %><br>
+          Description: <%= p.description %><br>
+          <% if p.status == 0 %>
+            Status: offline
+          <% else %>
+            Status: online
+          <% end %>
+          <br>
+          <span><a href="/share/<%= p.id %>">[share]</a></span>
+          <span><a href="/export/<%= p.id %>">[export]</a></span>
+          <span><a href="/<%= p.id %>/destroy">[destroy]</a></span>
+
+
+        </p>
+    <% end %>
+</article>
+</section>
+
+
+</body>
+</html>

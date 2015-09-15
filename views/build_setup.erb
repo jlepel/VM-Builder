@@ -1,0 +1,57 @@
+
+<form method="post" action="/save">
+  <input type="hidden" name="_method" value="put">
+  <section id="buildprocess">
+    <input type="text" name="machinename" placeholder="Machine-Name&hellip;">
+  </section>
+  <section id="ip">
+    <input type="text" name="ip" placeholder="10.0.0.1&hellip;">
+  </section>
+  <section id="description">
+    <input type="text" name="description" placeholder="Description&hellip;">
+  </section>
+
+
+  <section id="image">
+
+      <input type="radio" id="mc" name="Bit" value='<%= @bit32_machine.vm_name %>'> Standard 32Bit Machine<br>
+      <input type="radio" id="vi" name="Bit" value='<%= @bit64_machine.vm_name %>'> Standard 64Bit Machine<br>
+
+      <div class="row-fluid control-group">
+        <div class="span7 pull-left">
+          <label class="radio" for="Other Machine">
+            <input type="radio" name="Bit" id="om" value='Other Machine'> Other Machine<br>
+          </label>
+          <div class="input-append">
+            <input type="text" name="free_machine" id="fm" class="free_machine" placeholder="Enter Machine"><br><br>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <% @software_selection.each do |software| %>
+      <article>
+        <p>
+          <%= software.name %>
+          <span><a href="/edit/<%= software.id %>">[edit]</a></span>
+        </p>
+        <p class="links">
+          <input type='checkbox' name='progVote[]' value='<%= software.name %>'/>
+        </p>
+
+        <p class="meta">Command: <%= software.command %> <br>
+        </p>
+      </article>
+  <% end %>
+  <br>
+  <section id="commit">
+    <input type="submit"  value="Next">
+  </section>
+
+</form>
+
+
+
+
+</section>
+</form>
