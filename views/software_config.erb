@@ -1,72 +1,49 @@
 <!DOCTYPE html>
 <html>
 
-<form method="post" action="/software_config" enctype="multipart/form-data">
+  <form method="post" action="/software_config" enctype="multipart/form-data">
 
     <input type="text" name="program" placeholder="Program&hellip;"><br>
     <input type="text" name="command" placeholder="Command&hellip;"><br>
     <input type="text" name="description" placeholder="Description&hellip;"><br><br>
 
 
-  <section class="container">
-    <div>
-      <select id="leftValues" size="5" multiple>
-        <% @software_selection.each do |software| %>
+    <section class="container">
+      <div>
+        <select id="leftValues" size="5" multiple>
+          <% @software_selection.each do |software| %>
             <option><%= software.name %></option>
-        <% end %>
-      </select>
-    </div>
-    <div>
-      <input type="button" id="btnRight" value="&gt;&gt;" />
-      <input type="button" id="btnLeft" value="&lt;&lt;" />
-    </div>
-    <div>
-      <select id="rightValues" name="selection[]" size="4" multiple>
-      </select>
-    </div>
-  </section>
+          <% end %>
+        </select>
+      </div>
+      <div>
+        <input type="button" id="btnRight" value="&gt;&gt;" />
+        <input type="button" id="btnLeft" value="&lt;&lt;" />
+      </div>
+      <div>
+        <select id="rightValues" name="selection[]" size="4" multiple>
+        </select>
+      </div>
+    </section>
     <br><br>
     Shellscript auswählen<br>
     <input name="file" type="file" accept=".sh"/>
     <input type="text" name="destination" placeholder="Destination on Server&hellip;"><br>
-  <button type="submit">Save</button>
-    </form>
+    <button type="submit">Save</button>
+  </form>
 
-
-
-
-
-
-
-
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script>
+  <script>
 
     $("#btnLeft").click(function () {
-        var selectedItem = $("#rightValues option:selected");
-        $("#leftValues").append(selectedItem);
+      var selectedItems = $("#rightValues option:selected");
+      $("#leftValues").append(selectedItem);
     });
 
     $("#btnRight").click(function () {
-        var selectedItem = $("#leftValues option:selected");
-        $("#rightValues").append(selectedItem);
-
+      var selectedItems = $("#leftValues option:selected");
+      $("#rightValues").append(selectedItem);
     });
 
-    $("#rightValues").change(function () {
-        //var selectedItem = $("#rightValues option:selected");
-        //$("#txtRight").val(selectedItem.text());
-    });
-    $("#leftValues").change(function () {
-        //var selectedItem = $("#leftValues option:selected");
-        //$("#txtLeft").val(selectedItem.text());
-        $('#myModal').modal('show');
-
-    });
-
-
-</script>
-</body>
+  </script>
+  </body>
 </html>
