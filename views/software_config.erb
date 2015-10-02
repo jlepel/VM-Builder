@@ -1,49 +1,71 @@
-<!DOCTYPE html>
-<html>
+<div class="page-header">
+  <h1>Add Software</h1>
+</div>
 
-  <form method="post" action="/software_config" enctype="multipart/form-data">
+<div class="row">
+  <div class="col-sm-offset-1 col-sm-10">
+    <form method="post" action="/software_config" class="form-horizontal" enctype="multipart/form-data">
 
-    <input type="text" name="program" placeholder="Program&hellip;"><br>
-    <input type="text" name="command" placeholder="Command&hellip;"><br>
-    <input type="text" name="description" placeholder="Description&hellip;"><br><br>
-
-
-    <section class="container">
-      <div>
-        <select id="leftValues" size="5" multiple>
-          <% @software_selection.each do |software| %>
-            <option><%= software.name %></option>
-          <% end %>
-        </select>
+      <div class="form-group">
+        <label for="program" class="col-sm-2 control-label">Program</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="program">
+        </div>
       </div>
-      <div>
-        <input type="button" id="btnRight" value="&gt;&gt;" />
-        <input type="button" id="btnLeft" value="&lt;&lt;" />
+
+      <div class="form-group">
+        <label for="command" class="col-sm-2 control-label">Command</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="command">
+        </div>
       </div>
-      <div>
-        <select id="rightValues" name="selection[]" size="4" multiple>
-        </select>
+
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="description">
+        </div>
       </div>
-    </section>
-    <br><br>
-    Shellscript auswählen<br>
-    <input name="file" type="file" accept=".sh"/>
-    <input type="text" name="destination" placeholder="Destination on Server&hellip;"><br>
-    <button type="submit">Save</button>
-  </form>
 
-  <script>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+          <select id="software-options" class="software-list" size="5" multiple>
+            <% @software_selection.each do |software| %>
+              <option><%= software.name %></option>
+            <% end %>
+          </select>
+        </div>
 
-    $("#btnLeft").click(function () {
-      var selectedItems = $("#rightValues option:selected");
-      $("#leftValues").append(selectedItem);
-    });
+        <div class="text-center col-sm-2">
+          <a class="btn" id="removeSelectionButton"><span class="glyphicon glyphicon-arrow-left"></span></a>
+          <a class="btn" id="addSelectionButton"><span class="glyphicon glyphicon-arrow-right"></span></a>
+        </div>
 
-    $("#btnRight").click(function () {
-      var selectedItems = $("#leftValues option:selected");
-      $("#rightValues").append(selectedItem);
-    });
+        <div class="col-sm-4">
+          <select id="software-selected" class="software-list" name="selection[]" size="5" multiple>
+          </select>
+        </div>
+      </div>
 
-  </script>
-  </body>
-</html>
+      <div class="form-group">
+        <div class="col-sm-2 text-right">
+          <strong>Shell script</strong><br />
+        </div>
+        <div class="col-sm-10" id="file-selector">
+          <div class="form-group col-sm-5">
+            <input type="file" class="form-control" name="files[]file">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-right">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="software_selector.js" type="text/javascript"></script>
