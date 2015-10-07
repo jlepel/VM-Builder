@@ -2,3 +2,16 @@
   margin-top: 20px;
   text-align: right;
 }
+
+.logfile {
+  overflow: scroll;
+  height: 500px;
+}
+
+.form-inline .file-item .form-group {
+  margin-bottom: 10px;
+}
+
+.software-list {
+  width: 100%;
+}

@@ -1,13 +1,8 @@
-<body class='container'>
+<pre class="logfile">
+  <%= @content %>
+</pre>
 
-<section id="menue">
-  <span><a href="/admin">[Administration]</a></span><br><br>
-</section>
-
-<section id="log">
-  <form method="post" action="/log">
-    <input type="hidden" name="_method" value="delete">
-    <%= @content %>
-    <button type="submit">Delete</button>
-  </form>
-</section>
+<form method="post" action="/log">
+  <input type="hidden" name="_method" value="delete">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
