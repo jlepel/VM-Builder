@@ -1,52 +1,71 @@
 require './helpers/persistence_handler'
 
 class VagrantControl
+# TODO: cat Vagrantfile | tee bla.txt /var/www/builderapp/files/log/log1.txt
 
   FILENAME = 'Vagrantfile'
 
-  def initialize
+
+  def initialize()
     @persistence_handler = PersistenceHandler.new
   end
 
-  def log_path?
-    @persistence_handler.logfile?.value
+  def get_application_logpath
+    @persistence_handler.get_logfile_path
   end
 
-  def startup_command?
-    ('vagrant up >> ' + log_path?)
+  def machine_logpath
+    @persistence_handler.get_machine_logfile_name
   end
 
-  def login_command?
-    ('vagrant ssh >> ' + log_path?)
+  def startup(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant up | tee ' + get_application_logpath + ' ' + machine_log_path)
   end
 
-  def destroy_command?
-    ('vagrant destroy -f >> ' + log_path?)
+  def login(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant ssh | tee -a ' + get_application_logpath + ' ' + machine_log_path)
   end
 
-  def share_command?
-    ('vagrant share --ssh>> ' + log_path?)
+  def destroy(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant destroy -f | tee -a ' + get_application_logpath + ' ' + machine_log_path)
   end
 
-  def create_file(machine_name)
+  def share(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant share --ssh | tee -a ' + get_application_logpath + ' ' + machine_log_path)
+  end
+
+  def halt(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant halt | tee -a ' + get_application_logpath + ' ' + machine_log_path)
+  end
+
+
+  def create_vagrant_file(machine_name, switch)
     write_option = 'w'
-    image = @persistence_handler.machine_image?(machine_name)
+    image = @persistence_handler.get_machine_image(machine_name)
+    image_name = image.vm_name
     url = image.url
-    ip = @persistence_handler.machine_ip?(machine_name)
+    ip = @persistence_handler.get_machine_ip(machine_name)
 
 
-    path = @persistence_handler.vm_installpath?.value.concat(machine_name) << '/'
+    path = @persistence_handler.get_vm_installpath.concat(machine_name) << '/'
     path_file = path.concat(FILENAME)
 
     open(path_file, write_option) { |i|
       i.write("Vagrant.configure(\"2\") do |conf|\n")
-        i.write("\t" + 'conf.vm.box' +  ' = '  + "\"#{image.vm_name}\"" + "\n")
+        i.write("\t" + 'conf.vm.box' +  ' = '  + "\"#{image_name}\"" + "\n")
         i.write("\t" + 'conf.vm.box_url' + ' = ' + "\"#{url}\"" + "\n")
         i.write("\t" + 'conf.vm.network :private_network, ip: ' + "\"#{ip}\"" + "\n" + "\n")
 
-        i.write("\t" + 'conf.vm.provision "ansible" do |ansible|'+ "\n")
-        i.write("\t" + 'ansible.playbook = "' + machine_name + '.yaml"'+ "\n")
-        i.write("\t" + 'end' + "\n" + "\n")
+        if switch
+          i.write("\t" + 'conf.vm.provision "ansible" do |ansible|'+ "\n")
+          i.write("\t" + 'ansible.playbook = "' + machine_name + '.yaml"'+ "\n")
+          i.write("\t" + 'end' + "\n" + "\n")
+        end
 
         i.write("\t" + 'conf.vm.provider :virtualbox do |vb|'+ "\n")
         i.write("\t" + 'vb.name = ' + "\"#{machine_name}\"" + "\n")
@@ -54,4 +73,18 @@ class VagrantControl
       i.write('end')
     }
   end
+
+  def build_ready?(machine_name)
+    @pass = false
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    buildup = open(machine_log_path).grep(/.*(Machine booted and ready).*/)
+    buildup.empty? ? @pass=false : @pass=true
+    @pass
+  end
+
+
+  def machine_destroyed?(machine_name)
+
+  end
+
 end

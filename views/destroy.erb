@@ -1,9 +1,9 @@
 <% if @machine %>
     <p>Are you sure you want to destroy the following machine: <em>"<%= @machine.name %>"</em>?</p>
-    <form action="/<%= @machine.id %>" method="post">
+    <form action="/<%= @machine.id %>/destroy" method="post">
       <input type="hidden" name="_method" value="delete">
       <input type="submit" value="Yes, Destroy It!">
-      <a href="/<%= @machine.id %>">Cancel</a>
+      <a href="/">Cancel</a>
     </form>
 <% else %>
     <p>Machine not found.</p>

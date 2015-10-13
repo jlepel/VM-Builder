@@ -41,7 +41,7 @@ class Software
 
   property :id, Serial # An auto-increment integer key
   property :name, String, :length => 255, :required => true # A varchar type string, for short strings
-  property :command, String, :length => 255, :required => true # A text block, for longer string data.
+  property :command, String, :length => 255 # A text block, for longer string data.
   property :description, String, :length => 255 # A text block, for longer string data.
 
 
@@ -127,40 +127,50 @@ DataMapper.finalize.auto_upgrade!
 
 class PersistenceHandler
 
+
+
   def save_build(name, ip, desc, vmimage, status, programs)
     Machine.transaction do |t|
       begin
         Machine.first_or_create(:name => name, :ip => ip, :description => desc, :vmimage_vm_name => vmimage, :status => status)
-        programs.each do |software|
-          Machinesoftware.first_or_create(:machine_id => machine_id?(name), :software_id => software_id?(software))
-        end
+          if (!programs.nil?)
+            programs.each do |software|
+              Machinesoftware.first_or_create(:machine_id => get_machine_id(name), :software_id => get_software_id(software))
+            end
+          end
+
       rescue
         t.rollback
       end
     end
+
+
   end
 
-  def machine_image?(machine_name)
-    machine = Machine.first(:name => machine_name)
-    image = machine.vmimage_vm_name
+
+  def get_software(id)
+    Software.first(:id => id)
+  end
+
+  def update_software(id, name, command, description)
+    Software.first(:id => id).update(:name => name, :command => command, :description => description)
+  end
+
+  def get_machine_image(machine_name)
+    image = Machine.first(:name => machine_name).vmimage_vm_name
     Vmimage.first(:vm_name => image)
-
   end
 
-  def all_machines?
+  def get_all_machines
     Machine.all
   end
 
-  def machine_id?(machine_name)
-    machine_id = Machine.first(:name => machine_name)
-    machine_id.id
+  def get_machine_id(machine_name)
+    Machine.first(:name => machine_name).id
   end
 
-  def machine?(id)
-    Machine.get(id)
-  end
 
-  def machine_ip?(machine_name)
+  def get_machine_ip(machine_name)
     machine_id = Machine.first(:name => machine_name)
     machine_id.ip
   end
@@ -172,92 +182,116 @@ class PersistenceHandler
       ms.destroy
     end
     Machine.get(id).destroy
-
   end
 
+  def get_machine(id)
+    Machine.get(id)
+  end
 
-  def all_software?
+  def get_softwarelist
     Software.all
   end
 
-  def add_software(name, command, desc)
-    Software.first_or_create(:name => name, :command => command, :desc => desc)
+  def software_file_bundle(name, command, desc, file_array)
+    Software.transaction do |t|
+      begin
+        Software.create(:name => name, :command => command, :description => desc)
+        file_array.each do |file_data|
+          Datafile.create(:name => file_data[:file][:filename] ,:source => self.get_upload_folder ,:target => file_data[:path] )
+          Softwarefile.first_or_create(:software_id => get_software_id(name), :datafile_id => get_file_id(file_data[:file][:filename]))
+        end
+      end
+    end
   end
 
-  def software_id?(software_name)
-    software_id = Software.first(:name => software_name)
-    software_id.id
+
+  def get_file_id(file_name)
+    Datafile.first(:name =>file_name).id
   end
 
-  def hosts?
-    Configuration.first(:config_option => 'hosts')
+  def get_software_id(software_name)
+    Software.first(:name => software_name).id
+  end
+
+  def get_hosts
+    Configuration.first(:config_option => 'hosts').value
   end
 
   def sudo?
-    Configuration.first(:config_option => 'sudo')
+    Configuration.first(:config_option => 'sudo').value
   end
 
   def update_ansible_config(hosts, sudo)
-    hosts?.update(:value => hosts)
+    get_hosts.update(:value => hosts)
     sudo?.update(:value => sudo)
   end
 
-
-  def user?
-    Configuration.first(:config_option => 'cloud_user')
+  def set_machine_status(machine_name, status)
+    Machine.first(:name => machine_name).update(:status => status)
   end
 
-  def password?
-    Configuration.first(:config_option => 'cloud_pw')
+  def get_cloud_user
+    Configuration.first(:config_option => 'cloud_user').value
+  end
+
+  def get_cloud_password
+    Configuration.first(:config_option => 'cloud_pw').value
+  end
+
+  def get_upload_folder
+    Configuration.first(:config_option => 'upload_folder').value
   end
 
   def update_vagrant_config(user, password)
-    user?.update(:value => user)
-    password?.update(:value => password)
+    get_cloud_user.update(:value => user)
+    get_cloud_password.update(:value => password)
   end
 
 
-  def configuration?
+  def get_configurations
     Configuration.all
   end
 
-  def vagrant_hosts?
-    Configuration.first(:config_option => 'hosts')
+  def get_machine_logfile_name
+    Configuration.first(:config_option => 'machine_logfile_name').value
+  end
+
+
+  def get_vagrant_hosts
+    Configuration.first(:config_option => 'hosts').value
   end
 
   def vagrant_sudo?
-    Configuration.first(:config_option => 'sudo')
+    Configuration.first(:config_option => 'sudo').value
   end
 
-  def app_installpath?
-    Configuration.first(:config_option => 'app_installpath')
+  def get_app_installpath
+    Configuration.first(:config_option => 'app_installpath').value
   end
 
-  def vm_installpath?
-    Configuration.first(:config_option => 'vm_installpath')
+  def get_vm_installpath
+    Configuration.first(:config_option => 'vm_installpath').value
   end
 
   def update_general_config(app_path, vm_path)
-    app_installpath?.update(:value => app_path)
-    vm_installpath?.update(:value => vm_path)
+    Configuration.first(:config_option => 'app_installpath').update(:value => app_path)
+    Configuration.first(:config_option => 'vm_installpath').update(:value => vm_path)
   end
 
   def update_log_config(log)
-    logfile?.update(:value => log)
+    Configuration.first(:config_option => 'logfile').update(:value => log)
   end
 
-  def logfile?
-    Configuration.first(:config_option => 'logfile')
+  def get_logfile_path
+    Configuration.first(:config_option => 'logfile').value
   end
 
   def file_path?
-    path = Configuration.first(:config_option => 'file_path')
-    path.value
+    Configuration.first(:config_option => 'file_path').value
   end
 
   def file_id?(file)
-    file_id = Datafile.first(:name => file)
-    file_id.id
+    Datafile.first(:name => file).id
   end
 
 
@@ -282,11 +316,11 @@ class PersistenceHandler
         Software.first_or_create(:name => program, :command => command, :description => desc)
 
           selection.each do |software|
-            Package.first_or_create(:source_id => software_id?(program), :sub_id => software_id?(software))
+            Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
           end
 
           Datafile.first_or_create(:name => file, :source =>file_path?,  :target => destination)
-          Softwarefile.first_or_create(:software_id => software_id?(program), :datafile_id => file_id?(file))
+          Softwarefile.first_or_create(:software_id => get_software_id(program), :datafile_id => file_id?(file))
       rescue
         t.rollback
       end
@@ -302,7 +336,7 @@ class PersistenceHandler
       begin
         Software.first_or_create(:name => program, :command => command, :description => desc)
         selection.each do |software|
-          Package.first_or_create(:source_id => software_id?(program), :sub_id => software_id?(software))
+          Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
         end
       rescue
         t.rollback

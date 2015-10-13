@@ -7,7 +7,7 @@ vmbuilder = VMBuilder.new
 
 
 get '/' do
-  @show_machines = vmbuilder.machines?
+  @show_machines = vmbuilder.get_all_machines
 
   erb :init
 end

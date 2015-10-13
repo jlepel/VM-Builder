@@ -16,8 +16,8 @@ class FileSystemManager
     FileUtils.touch(file_name)
   end
 
-  def file_content?(log)
-    file = File.open(log.value, 'rb')
+  def get_file_content(file_name)
+    file = File.open(file_name, 'rb')
     content = file.read
     file.close
     content

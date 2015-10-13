@@ -4,18 +4,20 @@ require_relative 'softwareadmin_controller'
 
 admin_mgr = Administration_Manager.new
 get '/admin' do
-  @hosts = admin_mgr.hosts?
+  @hosts = admin_mgr.get_hosts
   @sudo = admin_mgr.sudo?
-  @app_installpath = admin_mgr.app_installpath?
-  @vm_installpath = admin_mgr.vm_installpath?
+  @app_installpath = admin_mgr.get_app_installpath
+  @vm_installpath = admin_mgr.get_vm_installpath
   @user = admin_mgr.user?
   @password = admin_mgr.password?
-  @path = admin_mgr.logfile_path?
+  @path = admin_mgr.get_logfile_path
   @ubuntu32 = admin_mgr.ubuntu32?
   @ubuntu64 = admin_mgr.ubuntu64?
 
   erb :administration
 end
+
+
 
 put '/ansible' do
   admin_mgr.update_ansible_config(params['hosts'], params['sudo'] )
@@ -46,8 +48,8 @@ put '/machines' do
 end
 
 get '/log' do
-  @content = admin_mgr.log_content?
-  erb :logfile
+  @content = admin_mgr.get_applicationlog_content
+  erb :logfile_application
 end
 
 
@@ -56,14 +58,3 @@ delete '/log' do
   redirect '/log'
 end
 
-
-get '/add' do
-
-  erb :software_add
-end
-
-post '/add' do
-  puts params['program']
-  admin_mgr.add_software(params['program'], params['command'], params['description'])
-  redirect '/add'
-end

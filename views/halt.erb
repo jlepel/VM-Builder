@@ -1,0 +1,9 @@
+<% if @machine %>
+    <p>Are you sure you want to stop the following machine: <em>"<%= @machine.name %>"</em>?</p>
+    <form action="/<%= @machine.id %>/halt" method="post">
+      <input type="submit" value="Yes, STOP the machine!">
+      <a href="/">Cancel</a>
+    </form>
+<% else %>
+    <p>Machine not found.</p>
+<% end %>

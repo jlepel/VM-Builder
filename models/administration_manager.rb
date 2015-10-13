@@ -11,13 +11,10 @@ class Administration_Manager
     @filesystem_manager = FileSystemManager.new
   end
   
-  def add_software(name, command, desc)
-    @persistence_handler.add_software(name, command, desc)
-  end
 
   # @return [string]
-  def hosts?
-    @persistence_handler.hosts?
+  def get_hosts
+    @persistence_handler.get_hosts
   end
 
   # @return [string]
@@ -26,39 +23,39 @@ class Administration_Manager
   end
 
   # @return [string]
-  def app_installpath?
-    @persistence_handler.app_installpath?
+  def get_app_installpath
+    @persistence_handler.get_app_installpath
   end
 
   # @return [string]
-  def vm_installpath?
-    @persistence_handler.vm_installpath?
+  def get_vm_installpath
+    @persistence_handler.get_vm_installpath
   end
 
   # @return [array]
-  def ansible_config?
-    @persistence_handler.ansible_config?
+  def get_ansible_config
+    @persistence_handler.get_ansible_config
   end
 
 
   # @return [array]
   def configuration?
-    @persistence_handler.configuration?
+    @persistence_handler.get_configurations
   end
 
   # @return [string]
   def password?
-    @persistence_handler.password?
+    @persistence_handler.get_cloud_password
   end
 
   # @return [string]
   def user?
-    @persistence_handler.user?
+    @persistence_handler.get_cloud_user
   end
 
   # @return [string]
-  def logfile_path?
-    @persistence_handler.logfile?
+  def get_logfile_path
+    @persistence_handler.get_logfile_path
   end
 
   def ubuntu64?
@@ -103,19 +100,19 @@ class Administration_Manager
 
   def write_log(content)
   write_option = 'w'
-  installpath = @persistence_handler.logfile?
+  installpath = @persistence_handler.get_logfile_path
 
   open(installpath, write_option) { |i|
     i.write(content)
   }
   end
 
-  def log_content?
-    @filesystem_manager.file_content?(@persistence_handler.logfile?)
+  def get_applicationlog_content
+    @filesystem_manager.get_file_content(@persistence_handler.get_logfile_path)
   end
 
   def delete_log
-    @filesystem_manager.delete_file_content(@persistence_handler.logfile?.value)
+    @filesystem_manager.delete_file_content(@persistence_handler.get_logfile_path.value)
   end
 
 

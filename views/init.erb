@@ -25,9 +25,16 @@
             online
           <% end %>
         </td>
-        <td><a href="/share/<%= p.id %>">[share]</a>
+        <td><a href="/<%= p.id %>/share">[share]</a>
         <a href="/export/<%= p.id %>">[export]</a>
-        <a href="/<%= p.id %>/destroy">[destroy]</a></td>
+        </td>
+        <td>
+          <a href="/<%= p.id %>/halt">[halt]</a>
+          <a href="/<%= p.id %>/destroy">[destroy]</a>
+        </td>
+        <td>
+          <a href="/<%= p.id %>/log">[log]</a>
+        </td>
       </tr>
     <% end %>
   </tbody>

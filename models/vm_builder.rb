@@ -14,12 +14,12 @@ class VMBuilder
     @persistence_handler.add_machine(name, desc, status)
   end
 
-  def machines?
-    @persistence_handler.all_machines?
+  def get_all_machines
+    @persistence_handler.get_all_machines
   end
 
-  def machine?(id)
-    @persistence_handler.machine?(id)
+  def get_machine(id)
+    @persistence_handler.get_machine(id)
   end
 
 
