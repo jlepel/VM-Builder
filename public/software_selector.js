@@ -1,5 +1,5 @@
 $(function() {
-  console.log("asd");
+
 
   $("#addSelectionButton").click(function () {
     var items = $("#software-options option:selected");
@@ -10,4 +10,6 @@ $(function() {
     var items = $("#software-selected option:selected");
     $("#software-options").append(items);
   });
+
+
 });

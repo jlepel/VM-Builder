@@ -15,7 +15,7 @@ class VagrantControl
   end
 
   def machine_logpath
-    @persistence_handler.get_machine_logfile_name
+    @persistence_handler.get_machine_logfile
   end
 
   def startup(machine_name)

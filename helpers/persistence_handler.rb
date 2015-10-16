@@ -138,7 +138,6 @@ class PersistenceHandler
               Machinesoftware.first_or_create(:machine_id => get_machine_id(name), :software_id => get_software_id(software))
             end
           end
-
       rescue
         t.rollback
       end
@@ -147,6 +146,10 @@ class PersistenceHandler
 
   end
 
+
+  def get_upload_folder
+    Configuration.first(:configuration => 'upload_folder').value
+  end
 
   def get_software(id)
     Software.first(:id => id)
@@ -197,9 +200,11 @@ class PersistenceHandler
       begin
         Software.create(:name => name, :command => command, :description => desc)
         file_array.each do |file_data|
-          Datafile.create(:name => file_data[:file][:filename] ,:source => self.get_upload_folder ,:target => file_data[:path] )
+          Datafile.create(:name => file_data[:file][:filename], :source => self.get_upload_folder, :target => file_data[:path])
           Softwarefile.first_or_create(:software_id => get_software_id(name), :datafile_id => get_file_id(file_data[:file][:filename]))
         end
+      rescue
+        t.rollback
       end
     end
   end
@@ -252,7 +257,7 @@ class PersistenceHandler
     Configuration.all
   end
 
-  def get_machine_logfile_name
+  def get_machine_logfile
     Configuration.first(:config_option => 'machine_logfile_name').value
   end
 
@@ -286,7 +291,7 @@ class PersistenceHandler
     Configuration.first(:config_option => 'logfile').value
   end
 
-  def file_path?
+  def get_file_path
     Configuration.first(:config_option => 'file_path').value
   end
 
@@ -309,6 +314,10 @@ class PersistenceHandler
     ubuntu64?.update(:value => ubuntu64)
   end
 
+  def save_import(machine_name)
+    Machine.create(:name => machine_name, :ip => 'import', :description => 'import', :status => 1, :vmimage_vm_name => 'precise32')
+  end
+
   def save_software_build(program, command, desc, selection, file, destination)
 
     Software.transaction do |t|
@@ -319,7 +328,7 @@ class PersistenceHandler
             Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
           end
 
-          Datafile.first_or_create(:name => file, :source =>file_path?,  :target => destination)
+          Datafile.first_or_create(:name => file, :source =>get_file_path,  :target => destination)
           Softwarefile.first_or_create(:software_id => get_software_id(program), :datafile_id => file_id?(file))
       rescue
         t.rollback

@@ -2,9 +2,6 @@ require './models/software_editor'
 
 software_editor = Software_Editor.new
 
-
-
-
 get '/package' do
   @software_selection = software_editor.get_softwarelist
   erb :software_package
@@ -37,22 +34,38 @@ put '/add' do
   #raise params.inspect
   software_editor.upload(params['files'])
   software_editor.add_software_file_bundle(params['program'], params['command'], params['description'], params['files'])
-
-
   redirect '/add'
 end
 
 
-get '/:id/edit' do
+
+
+get '/software' do
+  @software_selection = software_editor.get_softwarelist
+  erb :software_overview
+end
+
+get '/software/:id/edit' do
   @software = software_editor.get_software(params[:id])
   erb :software_edit
 end
 
-put '/:id/edit' do
+put '/software/:id/edit' do
   #raise params.inspect
   software_editor.update_software(params[:id], params['program'], params['command'], params['description'])
   redirect '/'
 end
+
+get '/software/:id/delete' do
+
+
+end
+
+
+delete '/software/:id/delete' do
+
+end
+
 
 
 

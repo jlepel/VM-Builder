@@ -10,7 +10,10 @@ class Administration_Manager
     @persistence_handler = PersistenceHandler.new
     @filesystem_manager = FileSystemManager.new
   end
-  
+
+  def get_machine_logfile
+    @persistence_handler.get_machine_logfile
+  end
 
   # @return [string]
   def get_hosts
@@ -20,6 +23,10 @@ class Administration_Manager
   # @return [string]
   def sudo?
     @persistence_handler.sudo?
+  end
+
+  def get_upload_folder
+    @persistence_handler.get_upload_folder
   end
 
   # @return [string]

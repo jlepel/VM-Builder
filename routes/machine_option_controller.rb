@@ -16,8 +16,13 @@ delete '/:id/destroy' do
 end
 
 
-get '/:id/import' do
+get '/import' do
   erb :import
+end
+
+post '/import' do
+  machine_manager.import(params['machine_name'], params['configs'])
+  redirect '/'
 end
 
 get '/:id/export' do

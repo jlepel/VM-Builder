@@ -59,5 +59,7 @@ class Buildprocessor
   def set_machine_status(machine_name, status)
     @persistence_handler.set_machine_status(machine_name, status)
   end
+
+
 end
 

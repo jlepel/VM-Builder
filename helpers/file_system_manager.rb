@@ -35,4 +35,21 @@ class FileSystemManager
     File.open(path, 'w') {|f| f.truncate(0) }
   end
 
+  def copy_to(file, from, target)
+    FileUtils.move from + file, target
+  end
+
+  def move_to(file, from, target)
+    FileUtils.move from + file, target
+  end
+
+  def upload(path, file_param)
+    file_param.each do |file_data|
+      File.open(path + file_data[:file][:filename], 'w') do |f|
+       # File.open('uploads/' + file_data[:file][:filename], "w") do |f|
+        f.write(file_data[:file][:tempfile].read)
+      end
+    end
+  end
+
 end

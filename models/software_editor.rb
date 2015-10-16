@@ -1,17 +1,14 @@
 require './helpers/persistence_handler'
+require './helpers/file_system_manager'
 class Software_Editor
 
   def initialize
     @persistence_handler = PersistenceHandler.new
+    @file_system_manager = FileSystemManager.new
   end
 
   def upload(file_param)
-    file_param.each do |file_data|
-      #File.open(@persistence_handler.get_upload_folder + file_data[:file][:filename], "w") do |f|
-      File.open('uploads/' + file_data[:file][:filename], "w") do |f|
-        f.write(file_data[:file][:tempfile].read)
-      end
-    end
+    @file_system_manager.upload(file_param)
   end
 
   def add_software_file_bundle(name, command, desc, file_array)

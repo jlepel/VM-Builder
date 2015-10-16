@@ -8,9 +8,11 @@ get '/admin' do
   @sudo = admin_mgr.sudo?
   @app_installpath = admin_mgr.get_app_installpath
   @vm_installpath = admin_mgr.get_vm_installpath
+  @upload_folder = admin_mgr.get_upload_folder
   @user = admin_mgr.user?
   @password = admin_mgr.password?
   @path = admin_mgr.get_logfile_path
+  @machine_log = admin_mgr.get_machine_logfile
   @ubuntu32 = admin_mgr.ubuntu32?
   @ubuntu64 = admin_mgr.ubuntu64?
 

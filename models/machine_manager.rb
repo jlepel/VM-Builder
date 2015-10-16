@@ -30,8 +30,8 @@ class MachineManager
 
   end
 
-  def import
-
+  def import(machine_name, config_array)
+    @import.import(machine_name, config_array)
   end
 
   def export
@@ -44,7 +44,7 @@ class MachineManager
 
   def get_machine_logfile(id)
     machine_name = @persistence_handler.get_machine(id).name
-    @file_system_manager.get_file_content(@persistence_handler.get_vm_installpath + machine_name + '/' + @persistence_handler.get_machine_logfile_name)
+    @file_system_manager.get_file_content(@persistence_handler.get_vm_installpath + machine_name + '/' + @persistence_handler.get_machine_logfile)
   end
 
   def halt_machine(id)
@@ -56,5 +56,6 @@ class MachineManager
     machine_name = @persistence_handler.get_machine(id).name
     @file_system_manager.exec(@persistence_handler.get_vm_installpath + machine_name, @machine_status.start(machine_name))
   end
+
 
 end

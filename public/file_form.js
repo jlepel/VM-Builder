@@ -1,16 +1,31 @@
 $(function() {
-  var template = $("#file-selector").html();
+  var template = '<div class="form-inline">'
+      +  '<div class="file-item">'
+      +   '<div class="form-group col-sm-5">'
+      +     '<input type="file" class="form-control" name="files[]file" id="file">'
+      +    '</div>'
+      +    '<div class="form-group col-sm-5">'
+      +      '<label for="exampleInputEmail2"></label>'
+      +       '<input type="text" class="form-control" name="files[]path" placeholder="/usr/local">'
+      +    '</div>'
+      +    '<div class="form-group col-sm-2">'
+      +      '<a class="btn btn-default" data-acts-as="file-remove-button">'
+      +        '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'
+      +      '</a>'
+      +    '</div>'
+      +  '</div>'
+      + '</div>';
 
   var removeFileFields = function(event) {
     $(event.currentTarget).parent().parent().remove();
   }
 
   var appendFileFields = function() {
-    var html = $(template);
-    html.find("[data-acts-as=file-remove-button]").click(removeFileFields);
-    $("#file-selector").append(html);
+    $("#file-selector").append(template);
   }
 
-  $("#file-add-button").click(appendFileFields);
-  $("[data-acts-as=file-remove-button]").click(removeFileFields);
+    $("#file-add-button").click(appendFileFields);
+    $("#file-selector").on("click", "[data-acts-as=file-remove-button]", removeFileFields);
+
+
 });
