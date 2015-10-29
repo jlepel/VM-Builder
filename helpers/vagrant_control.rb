@@ -1,7 +1,6 @@
 require './helpers/persistence_handler'
 
 class VagrantControl
-# TODO: cat Vagrantfile | tee bla.txt /var/www/builderapp/files/log/log1.txt
 
   FILENAME = 'Vagrantfile'
 
@@ -34,8 +33,12 @@ class VagrantControl
   end
 
   def share(machine_name)
-    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
-    ('vagrant share --ssh | tee -a ' + get_application_logpath + ' ' + machine_log_path)
+    http = '--disable-http'
+    https = '--https PORT'
+    ssh = '--ssh'
+
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_log_path
+    ('vagrant share ' + http + ' | tee -a ' + get_application_logpath + ' ' + machine_log_path)
   end
 
   def halt(machine_name)
@@ -43,6 +46,10 @@ class VagrantControl
     ('vagrant halt | tee -a ' + get_application_logpath + ' ' + machine_log_path)
   end
 
+  def export(machine_name)
+    machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/' + machine_logpath
+    ('vagrant package --output ' + machine_name + ' | tee -a ' + get_application_logpath + ' ' + machine_log_path)
+  end
 
   def create_vagrant_file(machine_name, switch)
     write_option = 'w'
@@ -59,7 +66,8 @@ class VagrantControl
       i.write("Vagrant.configure(\"2\") do |conf|\n")
         i.write("\t" + 'conf.vm.box' +  ' = '  + "\"#{image_name}\"" + "\n")
         i.write("\t" + 'conf.vm.box_url' + ' = ' + "\"#{url}\"" + "\n")
-        i.write("\t" + 'conf.vm.network :private_network, ip: ' + "\"#{ip}\"" + "\n" + "\n")
+        i.write("\t" + 'conf.vm.network :private_network, ip: ' + "\"#{ip}\"" + "\n")
+        i.write("\t" + 'conf.ssh.insert_key = \'true\''  + "\n" + "\n")
 
         if switch
           i.write("\t" + 'conf.vm.provision "ansible" do |ansible|'+ "\n")

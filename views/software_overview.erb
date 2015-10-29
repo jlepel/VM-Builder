@@ -15,6 +15,7 @@
       </thead>
       <tbody>
       <% @software_selection.each do |software| %>
+          <%if software.package == 0 %>
           <tr>
             <td></td>
             <td>
@@ -26,6 +27,7 @@
             <td><a href="/software/<%= software.id %>/edit">[edit]</a></td>
             <td><a href="/software/<%= software.id %>/delete">[delete]</a></td>
           </tr>
+      <% end %>
       <% end %>
       </table>
   </div>

@@ -43,6 +43,7 @@ class Software
   property :name, String, :length => 255, :required => true # A varchar type string, for short strings
   property :command, String, :length => 255 # A text block, for longer string data.
   property :description, String, :length => 255 # A text block, for longer string data.
+  property :package, Integer, :required => true
 
 
   has n, :softwarefiles
@@ -142,16 +143,15 @@ class PersistenceHandler
         t.rollback
       end
     end
-
-
   end
 
 
-  def get_upload_folder
-    Configuration.first(:configuration => 'upload_folder').value
+
+  def get_software_by_name(name)
+    Software.first(:name => name)
   end
 
-  def get_software(id)
+  def get_software_by_id(id)
     Software.first(:id => id)
   end
 
@@ -209,6 +209,41 @@ class PersistenceHandler
     end
   end
 
+  def update_package(id, package_name, description, selection, files)
+    Software.first(:id => id).update(:name => package_name, :description => description)
+    selection.each do |software|
+      Package.update(:source_id => id, :sub_id => get_software_id(software))
+    end
+  end
+
+
+  def get_package_content(id)
+    @content_array = Array.new
+    Package.all(:source_id => id).each do |content|
+      @content_array <<  Software.first(:id => content.sub_id).name
+    end
+    @content_array
+  end
+
+  def get_package_delta(id)
+    software_array = Array.new
+    Software.all.each do | elem |
+      software_array << elem.name
+    end
+
+    Package.all(:source_id => id).each do |elem|
+      software_array.delete(Software.first(:id => elem.sub_id).name)
+    end
+    software_array
+  end
+
+  def get_all_packages_by_id(id)
+    Package.all(:source_id => id)
+  end
+
+  def find_package(software_id)
+    Package.first(:source_id => software_id)
+  end
 
   def get_file_id(file_name)
     Datafile.first(:name =>file_name).id
@@ -318,32 +353,34 @@ class PersistenceHandler
     Machine.create(:name => machine_name, :ip => 'import', :description => 'import', :status => 1, :vmimage_vm_name => 'precise32')
   end
 
-  def save_software_build(program, command, desc, selection, file, destination)
-
+  def save_software_build(program, command, desc, selection, file)
     Software.transaction do |t|
       begin
-        Software.first_or_create(:name => program, :command => command, :description => desc)
+        Software.first_or_create(:name => program, :command => command, :description => desc, :package => 1)
 
-          selection.each do |software|
-            Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
-          end
+        selection.each do |software|
+          Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
+        end
 
-          Datafile.first_or_create(:name => file, :source =>get_file_path,  :target => destination)
-          Softwarefile.first_or_create(:software_id => get_software_id(program), :datafile_id => file_id?(file))
+        file.each do |file_data|
+          Datafile.first_or_create(:name => file_data[:file][:filename], :source => get_file_path,  :target => file_data[:path])
+          Softwarefile.first_or_create(:software_id => get_software_id(program), :datafile_id => file_id?(file_data[:file][:filename]))
+        end
       rescue
         t.rollback
       end
+
     end
   end
 
   def save_software(program, command, desc)
-    Software.first_or_create(:name => program, :command => command, :description => desc)
+    Software.first_or_create(:name => program, :command => command, :description => desc, :package => 0)
   end
 
-  def save_software_bundle(program, command, desc, selection)
+  def save_software_package(program, command, desc, selection)
     Software.transaction do |t|
       begin
-        Software.first_or_create(:name => program, :command => command, :description => desc)
+        Software.first_or_create(:name => program, :command => command, :description => desc, :package => 1)
         selection.each do |software|
           Package.first_or_create(:source_id => get_software_id(program), :sub_id => get_software_id(software))
         end

@@ -16,7 +16,7 @@ class Machine_Importer
     @file_system_manager.create_folder(machine_path)
     upload(machine_path, config_array)
     save_import(machine_name)
-    #@buildprocessor.start_vm(machine_name)
+    @buildprocessor.start_vm(machine_name)
 
   end
 

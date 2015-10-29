@@ -5,7 +5,7 @@ $(function() {
       +     '<input type="file" class="form-control" name="files[]file" id="file">'
       +    '</div>'
       +    '<div class="form-group col-sm-5">'
-      +      '<label for="exampleInputEmail2"></label>'
+      +      '<label for="exampleInputEmail2">target</label>'
       +       '<input type="text" class="form-control" name="files[]path" placeholder="/usr/local">'
       +    '</div>'
       +    '<div class="form-group col-sm-2">'

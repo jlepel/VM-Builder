@@ -32,7 +32,7 @@ class FileSystemManager
   end
 
   def delete_file_content(path)
-    File.open(path, 'w') {|f| f.truncate(0) }
+    File.open(path, 'w') {|f| f.truncate(0)}
   end
 
   def copy_to(file, from, target)
@@ -45,11 +45,15 @@ class FileSystemManager
 
   def upload(path, file_param)
     file_param.each do |file_data|
-      File.open(path + file_data[:file][:filename], 'w') do |f|
+      File.open(path + '/' + file_data[:file][:filename], 'w') do |f|
        # File.open('uploads/' + file_data[:file][:filename], "w") do |f|
         f.write(file_data[:file][:tempfile].read)
       end
     end
+  end
+
+  def find_in_file(file, line)
+    open(file).grep(/.*(line).*/)
   end
 
 end

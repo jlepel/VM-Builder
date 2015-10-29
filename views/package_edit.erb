@@ -1,0 +1,80 @@
+<div class="page-header">
+  <h1>Build your Packages</h1>
+</div>
+
+<div class="row">
+  <div class="col-sm-offset-1 col-sm-10">
+    <form method="post" action="/package/<%= @package.id %>" class="form-horizontal" enctype="multipart/form-data">
+      <input type="hidden" name="_method" value="put">
+      <div class="form-group">
+        <label for="program" class="col-sm-2 control-label">Package</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="package_name" value="<%= @package.name %>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" name="description" value="<%= @package.description %>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+          <select name="software_options" id="software-options" class="software-list" size="5" multiple>
+            <% @package_delta.each do |software| %>
+                <option><%= software %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="text-center col-sm-2">
+          <a class="btn" id="removeSelectionButton"><span class="glyphicon glyphicon-arrow-left"></span></a>
+          <a class="btn" id="addSelectionButton"><span class="glyphicon glyphicon-arrow-right"></span></a>
+        </div>
+
+        <div class="col-sm-4">
+          <select id="software-selected" class="software-list" name="selection[]" size="5" multiple>
+
+              <% @package_content.each do |software| %>
+                  <option selected><%= software %></option>
+              <% end %>
+
+          </select>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <div class="col-sm-2 text-right">
+          <strong>Files</strong><br />
+        </div>
+
+        <div class="col-sm-10" id="file-selector">
+        </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+          <a class="btn btn-default" id="file-add-button">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            add file
+          </a>
+        </div>
+      </div>
+
+      <div class="form-group">
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 text-right">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/file_form.js" type="text/javascript"></script>
+<script src="/software_selector.js" type="text/javascript"></script>

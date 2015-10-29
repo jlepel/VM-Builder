@@ -10,9 +10,18 @@ class Machine_Sharing
   end
 
   def share(machine_id)
-    puts @persistence_handler.get_vm_installpath
-    #machine = @persistence_handler.get_machine(machine_id).name
-    #@file_system_manager.exec(@persistence_handler.get_vm_installpath.value + machine, @vagrant.share)
+    @share_name = ''
+    puts machine_name = @persistence_handler.get_machine(machine_id).name
+    @file_system_manager.exec(@persistence_handler.get_vm_installpath + machine_name, @vagrant.share(machine_name))
+    File.open(machine_folder + @persistence_handler.get_machine_logfile) { |line|
+      line.each_line do |l|
+        a = l.match(/(.*)(http:.*)/)
+        unless a.nil?
+          @share_name = a.captures[1]
+        end
+      end
+    }
+  @share_name
   end
 
 

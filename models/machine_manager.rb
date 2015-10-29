@@ -27,15 +27,15 @@ class MachineManager
   end
 
   def share(machine_id)
-
+    @share.share(machine_id)
   end
 
   def import(machine_name, config_array)
     @import.import(machine_name, config_array)
   end
 
-  def export
-
+  def export(machine_id)
+    @export.export(machine_id)
   end
 
   def get_machines(id)
@@ -55,6 +55,10 @@ class MachineManager
   def start_machine(id)
     machine_name = @persistence_handler.get_machine(id).name
     @file_system_manager.exec(@persistence_handler.get_vm_installpath + machine_name, @machine_status.start(machine_name))
+  end
+
+  def find_in_file(machine_name, expr)
+    open(@persistence_handler.get_vm_installpath + machine_name + '/'+ @persistence_handler.get_machine_logfile).grep(/(.*)(http:.*)/)
   end
 
 

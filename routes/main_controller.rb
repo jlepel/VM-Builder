@@ -1,6 +1,6 @@
 require './models/vm_builder'
 require_relative 'machine_option_controller'
-require_relative 'Building_Process_Controller'
+require_relative 'building_process_controller'
 
 
 vmbuilder = VMBuilder.new

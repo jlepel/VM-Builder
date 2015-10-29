@@ -26,17 +26,26 @@ post '/import' do
 end
 
 get '/:id/export' do
-  erb :export
+  @machine_name = machine_manager.get_machines(params[:id]).name
+  erb :export_machine
+end
+
+get '/download/*/*' do |id ,filename|
+  puts [id,filename]
+  #machine_manager.export(params[:id])
+  #send_file "/home/greg/machines/testmachine6/#{filename}", :filename => filename, :type => 'Application/octet-stream'
 end
 
 get '/:id/share' do
-  @test = false
-  @bla = open('/home/greg/machines/dasdas/status.log').grep(/.*(Machine booted and ready).*/)
 
+  @machine_name = machine_manager.get_machines(params[:id]).name
+  #@share_name = machine_manager.share(params[:id])
+  @share_name = 'superb-vicuna-4426.vagrantshare.com'
 
+  #@share_name
+  #@share_name = open('/home/greg/machines/' + @machine_name + '/status.log').grep(/(.*)(http:.*)/)
+  #@share_name = machine_manager.find_in_file(@machine_name, '.*(http:.*)')[0]
 
-  #@share = vmbuilder.share(params[:id])
-  # eigene share info seite
   erb :share
 end
 
