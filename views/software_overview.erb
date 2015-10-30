@@ -9,6 +9,7 @@
       <tr>
         <th></th>
         <th>Name</th>
+        <th>Description</th>
         <th>Command</th>
         <th></th>
       </tr>
@@ -23,6 +24,7 @@
                 <%= software.name %>
               </label>
             </td>
+            <td><p class="meta"><code><%= software.description %></code></td>
             <td><p class="meta">Command: <code><%= software.command %></code></td>
             <td><a href="/software/<%= software.id %>/edit">[edit]</a></td>
             <td><a href="/software/<%= software.id %>/delete">[delete]</a></td>

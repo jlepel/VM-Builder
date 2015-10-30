@@ -1,5 +1,5 @@
 require './models/administration_manager'
-require_relative 'softwareadmin_controller'
+require_relative 'software'
 
 
 admin_mgr = Administration_Manager.new

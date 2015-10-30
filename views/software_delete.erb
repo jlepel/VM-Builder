@@ -1,0 +1,10 @@
+<% if @software %>
+    <p>Are you sure you want to delete the following package: <em>"<%= @software.name %>"</em>?</p>
+    <form action="/software/<%= @software.id %>/delete" method="post">
+      <input type="hidden" name="_method" value="delete">
+      <input type="submit" value="Yes, Destroy It!">
+      <a href="/">Cancel</a>
+    </form>
+<% else %>
+    <p>Software not found.</p>
+<% end %>

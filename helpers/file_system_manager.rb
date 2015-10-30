@@ -46,7 +46,6 @@ class FileSystemManager
   def upload(path, file_param)
     file_param.each do |file_data|
       File.open(path + '/' + file_data[:file][:filename], 'w') do |f|
-       # File.open('uploads/' + file_data[:file][:filename], "w") do |f|
         f.write(file_data[:file][:tempfile].read)
       end
     end

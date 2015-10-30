@@ -14,7 +14,7 @@ class Buildprocessor
   end
 
   def create_machine(machine_name, ip, description, bit, status, software, files)
-    save_build(machine_name, ip, description, bit, status, software)
+    save_build(machine_name, ip, description, bit, status, software, files)
     create_folder(machine_name)
 
     if software.nil? && files.nil?
@@ -29,7 +29,8 @@ class Buildprocessor
 
     start_vm(machine_name)
     check_build(machine_name) ? set_machine_status(machine_name, 1) : set_machine_status(machine_name, 0)
-  end
+
+end
 
 
   def create_folder(name)
@@ -67,8 +68,8 @@ class Buildprocessor
     @persistence_handler.ubuntu64?
   end
 
-  def save_build(name, ip, desc, vmimage, status, programs)
-    @persistence_handler.save_build(name, ip, desc, vmimage, status, programs)
+  def save_build(name, ip, desc, vmimage, status, programs, files)
+    @persistence_handler.save_build(name, ip, desc, vmimage, status, programs, files)
   end
 
   def get_machine_id(name)

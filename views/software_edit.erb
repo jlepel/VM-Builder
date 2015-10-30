@@ -1,10 +1,10 @@
 <div class="page-header">
-  <h1>Edit '<%= @software.name %>'</h1>
+
 </div>
 
 <div class="row">
   <div class="col-sm-offset-1 col-sm-10">
-    <form method="post" action="/<%= @software.id %>/edit" class="form-horizontal" enctype="multipart/form-data">
+    <form method="post" action="/software/<%= @software.id %>/edit" class="form-horizontal" enctype="multipart/form-data">
       <input type="hidden" name="_method" value="put">
 
       <div class="form-group">
@@ -15,18 +15,20 @@
       </div>
 
       <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" value="<%= @software.description %>" name="description">
+        </div>
+      </div>
+
+      <div class="form-group">
         <label for="command" class="col-sm-2 control-label">Command</label>
         <div class="col-sm-10">
           <input type="text" class="form-control" value="<%= @software.command %>" name="command">
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="description" class="col-sm-2 control-label">Description</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" value="<%= @software.description %>" name="description">
-        </div>
-      </div>
+
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10 text-right">
           <button type="submit" class="btn btn-primary">Save</button>

@@ -30,15 +30,19 @@ class MachineManager
     @share.share(machine_id)
   end
 
-  def import(machine_name, config_array)
-    @import.import(machine_name, config_array)
+  def import(machine_name, config_array, file_array)
+    @import.import(machine_name, config_array, file_array)
   end
 
   def export(machine_id)
     @export.export(machine_id)
   end
 
-  def get_machines(id)
+  def get_machine_path(id)
+    @persistence_handler.get_vm_installpath + @persistence_handler.get_machine(id).name + '/'
+  end
+
+  def get_machine(id)
     @persistence_handler.get_machine(id)
   end
 

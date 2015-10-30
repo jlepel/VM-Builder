@@ -9,6 +9,7 @@ class Yaml_Builder
 
     def create(machine_name, software, files)
       @components = Array.new
+      @package_files = Array.new
 
       software.each { |app|
         software_part = @persistence_handler.get_software_by_name(app)
@@ -17,19 +18,25 @@ class Yaml_Builder
           @persistence_handler.get_all_packages_by_id(software_part.id).each do |bundle_part|
             @components << @persistence_handler.get_software_by_id(bundle_part.sub_id).name
           end
+
+          bla = Softwarefile.all(:software_id => software_part.id) # alle verknüpfungen zwischen file und pack
+          bla.each do |elem|
+            file = @persistence_handler.get_file_by_id(elem.datafile_id)
+            @package_files << file_option_submission(file.name, file.source + file.name, file.target + file.name)
+          end
         else
           @components << app
         end
       }
       path = @persistence_handler.get_vm_installpath.concat(machine_name) + '/'
       path_file = path.concat("#{machine_name}") + '.yaml'
-      #puts yaml_body(@components, files).to_yaml
-      File.open(path_file , 'w') {|f| f.write(yaml_body(@components, files).to_yaml) }
+      #puts yaml_body(@components, files, @package_files, machine_name).to_yaml
+      File.open(path_file , 'w') {|f| f.write(yaml_body(@components, files, @package_files, machine_name).to_yaml) }
     end
 
     private
 
-    def yaml_body(software, files)
+    def yaml_body(software, files, package_files ,machine_name)
       yaml_body = Array.new
       @software_bool = false
       @task_array = Array.new
@@ -41,10 +48,17 @@ class Yaml_Builder
       end
 
       if !files.nil?
-        file_to_yaml(files).each do |file|
+        file_to_yaml(files, machine_name).each do |file|
             @task_array << file
         end
       end
+
+      if !package_files.nil?
+        @package_files.each do |file|
+          @task_array << file
+        end
+      end
+
       yaml_body[0]['tasks'] = @task_array
       yaml_body
     end
@@ -62,22 +76,27 @@ class Yaml_Builder
           'with_items' => software}
     end
 
-    def file_to_yaml(files)
+    def file_to_yaml(files, machine_name)
       file_array = Array.new
       files.each do |file_data|
         file_name = file_data[:file][:filename]
-        file_array << file_option_submission(file_name, @persistence_handler.get_vm_installpath + file_name, file_data[:path])
+        source = @persistence_handler.get_vm_installpath + machine_name + '/' + file_name
+        destination = file_data[:path] + file_name
+        file_array << file_option_submission(file_name, source, destination)
       end
 
       file_array
     end
 
+
+
     def file_option_submission(file_name, source, destination)
       {
           'name' => 'Copy ' + file_name + ' to: ' + destination,
-          'action' => 'copy src='+ source + '' ' dest=' + destination + file_name,
+          'action' => 'copy src='+ source + ' dest=' + destination
       }
     end
+
 
 end
 

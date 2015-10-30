@@ -1,63 +1,10 @@
 Bringing machine 'default' up with 'virtualbox' provider...
 ==> default: Importing base box 'precise32'...
-[KProgress: 20%[KProgress: 30%[KProgress: 40%[KProgress: 50%[KProgress: 70%[KProgress: 80%[KProgress: 90%[K==> default: Matching MAC address for NAT networking...
-==> default: Setting the name of the VM: filetest
-==> default: Fixed port collision for 22 => 2222. Now on port 2202.
-==> default: Clearing any previously set network interfaces...
-==> default: Preparing network interfaces based on configuration...
-    default: Adapter 1: nat
-    default: Adapter 2: hostonly
-==> default: Forwarding ports...
-    default: 22 => 2202 (adapter 1)
-==> default: Booting VM...
-==> default: Waiting for machine to boot. This may take a few minutes...
-    default: SSH address: 127.0.0.1:2202
-    default: SSH username: vagrant
-    default: SSH auth method: private key
-    default: Warning: Connection timeout. Retrying...
-    default: Warning: Connection timeout. Retrying...
-    default: Warning: Connection timeout. Retrying...
-    default: Warning: Remote connection disconnect. Retrying...
-    default: 
-    default: Vagrant insecure key detected. Vagrant will automatically replace
-    default: this with a newly generated keypair for better security.
-    default: 
-    default: Inserting generated public key within guest...
-    default: Removing insecure key from the guest if its present...
-    default: Key inserted! Disconnecting and reconnecting using new SSH key...
-==> default: Machine booted and ready!
-==> default: Checking for guest additions in VM...
-    default: The guest additions on this VM do not match the installed version of
-    default: VirtualBox! In most cases this is fine, but in rare cases it can
-    default: prevent things such as shared folders from working properly. If you see
-    default: shared folder errors, please make sure the guest additions within the
-    default: virtual machine match the version of VirtualBox you have installed on
-    default: your host and reload your VM.
-    default: 
-    default: Guest Additions Version: 4.2.0
-    default: VirtualBox Version: 4.3
-==> default: Configuring and enabling network interfaces...
-==> default: Mounting shared folders...
-    default: /vagrant => /home/greg/machines/filetest
-==> default: Running provisioner: ansible...
-PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ANSIBLE_HOST_KEY_CHECKING=false ANSIBLE_SSH_ARGS='-o UserKnownHostsFile=/dev/null -o ControlMaster=auto -o ControlPersist=60s' ansible-playbook --private-key=/home/greg/machines/filetest/.vagrant/machines/default/virtualbox/private_key --user=vagrant --connection=ssh --limit='default' --inventory-file=/home/greg/machines/filetest/.vagrant/provisioners/ansible/inventory filetest.yaml
-
-PLAY [all] ******************************************************************** 
-
-GATHERING FACTS *************************************************************** 
-[0;32mok: [default][0m
-
-TASK: [General | Install required packages.] ********************************** 
-[0;33mchanged: [default] => (item=zip)[0m
-
-TASK: [Copy test_3.sh to: /tmp/] ********************************************** 
-[0;31mfailed: [default] => {"failed": true}[0m
-[0;31mmsg: could not find src=/home/greg/machines/test_3.sh[0m
-[0;31m
-FATAL: all hosts have already failed -- aborting[0m
-
-PLAY RECAP ******************************************************************** 
-           to retry, use: --limit @/home/greg/filetest.yaml.retry
-
-[0;31mdefault[0m                    : [0;32mok[0m[0;32m=[0m[0;32m2[0m    [0;33mchanged[0m[0;33m=[0m[0;33m1[0m    unreachable=0    [0;31mfailed[0m[0;31m=[0m[0;31m1[0m   
-
+[KProgress: 10%[KProgress: 30%[KProgress: 40%[KProgress: 50%[KProgress: 70%[KProgress: 80%[KProgress: 90%[K==> default: Matching MAC address for NAT networking...
+==> default: Destroying VM and associated drives...
+==> default: Running cleanup tasks for 'ansible' provisioner...
+==> default: VM not created. Moving on...
+==> default: Attempting graceful shutdown of VM...
+==> default: Clearing any previously set forwarded ports...
+==> default: Exporting VM...
+[K==> default: Compressing package to: /home/greg/machines/jan/jan

@@ -11,12 +11,18 @@ class Machine_Importer
     @persistence_handler = PersistenceHandler.new
   end
 
-  def import(machine_name, config_array)
+  def import(machine_name, config_array, file_array)
+
     machine_path = @persistence_handler.get_vm_installpath + machine_name +'/'
-    @file_system_manager.create_folder(machine_path)
+    save_import(machine_name, file_array)
+    @buildprocessor.create_folder(machine_name)
     upload(machine_path, config_array)
-    save_import(machine_name)
+    unless file_array.nil?
+      upload(machine_path, file_array)
+    end
+
     @buildprocessor.start_vm(machine_name)
+    @buildprocessor.check_build(machine_name) ? @buildprocessor.set_machine_status(machine_name, 1) : @buildprocessor.set_machine_status(machine_name, 0)
 
   end
 
@@ -24,10 +30,9 @@ class Machine_Importer
     @file_system_manager.upload(file_path, file_array)
   end
 
-  def save_import(machine_name)
+  def save_import(machine_name, files)
     machine_log_path = @persistence_handler.get_vm_installpath + machine_name + '/'
-
-    @persistence_handler.save_import(machine_name)
+    @persistence_handler.save_import(machine_name, files)
     @file_system_manager.exec(machine_log_path, 'echo \'import from ' + machine_name + ' completed\' >> '  + @persistence_handler.get_machine_logfile)
   end
 
