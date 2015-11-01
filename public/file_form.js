@@ -6,7 +6,7 @@ $(function() {
       +    '</div>'
       +    '<div class="form-group col-sm-5">'
       +      '<label for="exampleInputEmail2">target</label>'
-      +       '<input type="text" class="form-control" name="files[]path" placeholder="/usr/local">'
+      +       '<input type="text" class="form-control" name="files[]path" placeholder="/usr/local" required>'
       +    '</div>'
       +    '<div class="form-group col-sm-2">'
       +      '<a class="btn btn-default" data-acts-as="file-remove-button">'

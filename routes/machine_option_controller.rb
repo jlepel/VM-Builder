@@ -26,9 +26,10 @@ post '/import' do
 end
 
 get '/:id/download' do
-
+  machine_name = machine_manager.get_machine(params[:id]).name
+  path = machine_manager.get_machine_path(params[:id])
   machine_manager.export(params[:id])
-  send_file "/home/greg/machines/jan/jan.tar.gz", :filename => 'jan.tar.gz', :type => 'Application/octet-stream'
+  send_file "#{path}#{machine_name}.tar.gz", :filename => "#{machine_name}.tar.gz", :type => 'Application/octet-stream'
   redirect '/'
 end
 
@@ -46,7 +47,7 @@ get '/:id/share' do
   #@share_name = machine_manager.share(params[:id])
   @share_name = 'superb-vicuna-4426.vagrantshare.com'
 
-  #@share_name
+
   #@share_name = open('/home/greg/machines/' + @machine_name + '/status.log').grep(/(.*)(http:.*)/)
   #@share_name = machine_manager.find_in_file(@machine_name, '.*(http:.*)')[0]
 

@@ -435,28 +435,16 @@ class PersistenceHandler
   end
 
   def delete_package(id)
-    Package.transaction do |t|
-      begin
-
-        software_file_association = Softwarefile.all(:software_id => id)
-
-        unless software_file_association.nil?
+    software_file_association = Softwarefile.all(:software_id => id)
+    if !software_file_association.empty?
           software_file_association.each do |file|
             datafile = Datafile.first(:id => file.datafile_id)
-            file.destroy
             datafile.destroy
+            file.destroy
           end
-        end
-
-        pack = Package.all(:source_id => id)
-        software = Software.all(:id => id)
-        pack.destroy
-        software.destroy
-
-      rescue
-        t.rollback
-      end
     end
+    Package.all(:source_id => id).destroy
+    Software.first(:id => id).destroy
   end
 
 end

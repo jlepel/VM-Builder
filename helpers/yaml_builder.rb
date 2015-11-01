@@ -19,13 +19,13 @@ class Yaml_Builder
             @components << @persistence_handler.get_software_by_id(bundle_part.sub_id).name
           end
 
-          bla = Softwarefile.all(:software_id => software_part.id) # alle verknüpfungen zwischen file und pack
-          bla.each do |elem|
+          softwarefiles = Softwarefile.all(:software_id => software_part.id)
+          softwarefiles.each do |elem|
             file = @persistence_handler.get_file_by_id(elem.datafile_id)
             @package_files << file_option_submission(file.name, file.source + file.name, file.target + file.name)
           end
         else
-          @components << app
+          @components << software_part.command
         end
       }
       path = @persistence_handler.get_vm_installpath.concat(machine_name) + '/'
@@ -34,17 +34,19 @@ class Yaml_Builder
       File.open(path_file , 'w') {|f| f.write(yaml_body(@components, files, @package_files, machine_name).to_yaml) }
     end
 
-    private
+
 
     def yaml_body(software, files, package_files ,machine_name)
       yaml_body = Array.new
       @software_bool = false
       @task_array = Array.new
-      general_modul = {'hosts' => 'all', 'sudo' => 'true'}
+      general_modul = {'hosts' => @persistence_handler.get_hosts, 'sudo' => @persistence_handler.sudo?}
       yaml_body << general_modul
 
       if !software.nil?
-        @task_array << software_to_yaml(software)
+        software.each do |elem|
+          @task_array << software_to_yaml(elem)
+        end
       end
 
       if !files.nil?
@@ -68,12 +70,19 @@ class Yaml_Builder
     end
 
 
+    #def software_option_submission(software)
+    #  {
+    #      'name' => 'General | Install required packages.',
+    #      'apt' => 'pkg={{ item }} state=installed',
+    #      'tags' => 'common',
+    #      'with_items' => software}
+    #end
+
     def software_option_submission(software)
       {
-          'name' => 'General | Install required packages.',
-          'action' => 'apt pkg={{ item }} state=installed',
-          'tags' => 'common',
-          'with_items' => software}
+          'name' => 'Install ' + software,
+          'apt' =>  'pkg=' + software + ' state=installed update_cache=true'
+      }
     end
 
     def file_to_yaml(files, machine_name)

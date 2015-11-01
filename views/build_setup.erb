@@ -72,7 +72,7 @@
               <% @software_selection.each do |software| %>
               <tr>
                 <td>
-                  <input id="progVote-<%= software.name %>" type="checkbox" name="progVote[]" value="<%= software.name %>"/>
+                  <input id="progVote-<%= software.name %>" type="checkbox" name="progVote[]" value="<%= software.name %>"required/>
                 </td>
                 <td>
                   <label for="progVote-<%= software.name %>">

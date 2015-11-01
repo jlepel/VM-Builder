@@ -14,6 +14,7 @@ class Buildprocessor
   end
 
   def create_machine(machine_name, ip, description, bit, status, software, files)
+
     save_build(machine_name, ip, description, bit, status, software, files)
     create_folder(machine_name)
 
